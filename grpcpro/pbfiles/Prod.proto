@@ -1,6 +1,7 @@
 syntax = "proto3";
 package services;
 option go_package = "../services";
+import "google/api/annotations.proto";
 message ProdRequest {
   int32 prod_id =1;
 }
@@ -9,5 +10,9 @@ message ProdResponse {
 }
 
 service ProdService {
-  rpc GetProdStock (ProdRequest) returns (ProdResponse);
+  rpc GetProdStock (ProdRequest) returns (ProdResponse) {
+    option (google.api.http) = {
+      get: "/v1/prod/{prod_id}"
+    };
+  }
 }
