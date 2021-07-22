@@ -1,7 +1,7 @@
 syntax = "proto3"; // 使用protocol buffer proto3 语法
 
 package chat; //定义一个包名
-option go_package = "../service"; //定义需要自动生成的go文件 我现在想放在service文件夹下
+option go_package = "../services"; //定义需要自动生成的go文件 我现在想放在service文件夹下
 
 //请求数据 Request格式定义 结构数据定义从1开始，如果是枚举类型，字段要从0开始
 message Request {
