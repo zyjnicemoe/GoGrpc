@@ -17,6 +17,6 @@ message Response{
 其中只有名为AutoResponse的一个RPC服务，当然你也可以定义多个，可以再在这里面写一个rpc AutoResponse2(Request) returns (Response){}
 输入是Request格式的内容，输出是Response格式的内容
  */
-//service Chat{
-//    rpc AutoResponse(Request) returns (Response){}
-//}
+service Chat{
+    rpc AutoResponse(Request) returns (Response){}
+}
