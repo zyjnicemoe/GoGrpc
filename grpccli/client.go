@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	cert, err := tls.LoadX509KeyPair("conf/client/client.pem", "conf/client/client.key")
+	cert, err := tls.LoadX509KeyPair("conf/client/client.crt", "conf/client/client.key")
 
 	if err != nil {
 		log.Fatalf("tls.LoadX509KeyPair err: %v", err)
@@ -27,7 +27,7 @@ func main() {
 	}
 	creds := credentials.NewTLS(&tls.Config{
 		Certificates: []tls.Certificate{cert},
-		ServerName:   "zyjblogs.cn",
+		ServerName:   "www.zyjblogs.cn",
 		RootCAs:      certPool,
 	})
 	//创建证书

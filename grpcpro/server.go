@@ -13,7 +13,7 @@ func main() {
 	//if err != nil {
 	//	log.Fatalln(err)
 	//}
-	rpcServer := grpc.NewServer(grpc.Creds(helper.Get()))
+	rpcServer := grpc.NewServer(grpc.Creds(helper.GetServerCreds()))
 	services.RegisterProdServiceServer(rpcServer, new(services.ProdService))
 	//tcp
 	lis, _ := net.Listen("tcp", ":9029")
