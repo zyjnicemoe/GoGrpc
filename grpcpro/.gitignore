@@ -24,8 +24,8 @@ biligo/
 Thumbs.db
 
 # project
-*.cert
-*.key
+#*.cert
+#*.key
 .test
 iprepo.txt
 _output
