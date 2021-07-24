@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"google.golang.org/grpc"
+	"io"
 	"log"
 )
 
@@ -92,27 +93,59 @@ func main() {
 	//}
 
 	//流模式客户端分批发送
+	//userClient := NewUserServiceClient(conn)
+	//stream, err := userClient.GetUserScoreByClientStream(ctx)
+	//if err != nil {
+	//	log.Fatalln(err)
+	//}
+	//
+	//var i int32
+	//var j int32
+	////分三批每次发六条
+	//for j = 1; j <= 3; j++ {
+	//	req := UserScoreRequest{}
+	//	req.Users = make([]*UserInfo, 0)
+	//	for i = 1; i < 6; i++ {
+	//		//假设是一个耗时任务
+	//		req.Users = append(req.Users, &UserInfo{UserId: i*j})
+	//	}
+	//	if err := stream.Send(&req); err != nil {
+	//		log.Fatalln(err)
+	//	}
+	//}
+	//res,_:=stream.CloseAndRecv()
+	//fmt.Println(res.Users)
+
+	//双向流
 	userClient := NewUserServiceClient(conn)
-	stream, err := userClient.GetUserScoreByClientStream(ctx)
+	stream, err := userClient.GetUserScoreByTWS(ctx)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
 	var i int32
 	var j int32
+	var sum int32 = 0
 	//分三批每次发六条
 	for j = 1; j <= 3; j++ {
 		req := UserScoreRequest{}
 		req.Users = make([]*UserInfo, 0)
 		for i = 1; i < 6; i++ {
 			//假设是一个耗时任务
-			req.Users = append(req.Users, &UserInfo{UserId: i*j})
+			sum++
+			req.Users = append(req.Users, &UserInfo{UserId: sum})
 		}
 		if err := stream.Send(&req); err != nil {
 			log.Fatalln(err)
 		}
+		if res, err := stream.Recv(); err == io.EOF {
+			break
+		} else if err != nil {
+			log.Fatalln(err)
+		} else {
+			fmt.Println(res.Users)
+		}
+
 	}
-	res,_:=stream.CloseAndRecv()
-	fmt.Println(res.Users)
 
 }

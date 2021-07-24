@@ -13,6 +13,10 @@ message UserScoreResponse{
 service UserService{
   rpc GetUserScore(UserScoreRequest) returns (UserScoreResponse);
   //stream 代表流 分批处理和发送
+  //服务端流
   rpc GetUserScoreByServerStream(UserScoreRequest) returns (stream UserScoreResponse);
+  //客户端流
   rpc GetUserScoreByClientStream(stream UserScoreRequest) returns (UserScoreResponse);
+  //双向流
+  rpc GetUserScoreByTWS(stream UserScoreRequest) returns (stream UserScoreResponse);
 }
