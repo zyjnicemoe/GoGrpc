@@ -1,49 +1,78 @@
 package main
 
 import (
-	"GoGrpc/grpccli/services"
+	"GoGrpc/grpccli/helper"
+	. "GoGrpc/grpccli/services"
 	"context"
-	"crypto/tls"
-	"crypto/x509"
+	"fmt"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
-	"io/ioutil"
 	"log"
 )
 
 func main() {
-	cert, err := tls.LoadX509KeyPair("conf/client/client.crt", "conf/client/client.key")
-
-	if err != nil {
-		log.Fatalf("tls.LoadX509KeyPair err: %v", err)
-	}
-	certPool := x509.NewCertPool()
-	ca, err := ioutil.ReadFile("conf/ca.crt")
-	if err != nil {
-		log.Fatalf("ioutil.ReadFile err: %v", err)
-	}
-	if ok := certPool.AppendCertsFromPEM(ca); !ok {
-		log.Fatalf("certPool.AppendCertsFromPEM err")
-	}
-	creds := credentials.NewTLS(&tls.Config{
-		Certificates: []tls.Certificate{cert},
-		ServerName:   "www.zyjblogs.cn",
-		RootCAs:      certPool,
-	})
 	//创建证书
-	conn, err := grpc.Dial(":9029", grpc.WithTransportCredentials(creds))
+	conn, err := grpc.Dial(":9029", grpc.WithTransportCredentials(helper.GetClientCreds()))
 	//grpc.WithInsecure() 不使用证书
 	//conn,err := grpc.Dial(":9029",grpc.WithInsecure())
 	if err != nil {
 		log.Fatalln(err)
 	}
 	defer conn.Close()
-	prodClient := services.NewProdServiceClient(conn)
-	prodRes, err := prodClient.GetProdStock(context.Background(),
-		&services.ProdRequest{ProdId: 12})
-	if err != nil {
-		log.Fatalln(err)
-	}
-	log.Println(prodRes.ProdStock)
+	ctx := context.Background()
+	//prodClient := NewProdServiceClient(conn)
+
+	//获取单个
+	//prodRes, err := prodClient.GetProdStock(ctx,
+	//	&ProdRequest{ProdId: 12})
+	//if err != nil {
+	//	log.Fatalln(err)
+	//}
+	//fmt.Println(prodRes.ProdStock)
 	//需要加参数GODEBUG=x509ignoreCN=0 go run client.go
+	//获取多个
+	//response,err:=prodClient.GetProdStocks(ctx,&QuerySize{
+	//	Size: 10,
+	//})
+	//if err != nil {
+	//	log.Fatalln(err)
+	//}
+	//fmt.Println(response.Prodres[2].ProdStock)
+	//枚举测试
+	//prodRess, err := prodClient.GetProdStock(ctx,
+	//	&ProdRequest{ProdId: 12,ProdArea: ProdAreas_C})
+	//if err != nil {
+	//	log.Fatalln(err)
+	//}
+	//fmt.Println(prodRess.ProdStock)
+
+	//测试商品库存
+	//prod,err :=prodClient.GetProdInfo(ctx,&ProdRequest{
+	//	ProdId: 12,
+	//})
+	//if err != nil {
+	//	log.Fatalln(err)
+	//}
+	//fmt.Println(prod.ProdName)
+	//OrderClient := NewOrderServerClient(conn)
+	//order,err :=OrderClient.NewOrder(ctx,&OrderRequest{
+	//	OrderMain: &OrderMain{
+	//	OrderId: 1001,
+	//	OrderNo: "2021724",
+	//	OrderMoney: 90,
+	//	OrderTime: &timestamppb.Timestamp{Seconds: time.Now().Unix()},
+	//}})
+	//fmt.Println(order.Message)
+
+	//一般模式
+	UserClient := NewUserServiceClient(conn)
+	var i int32
+	req:= UserScoreRequest{}
+	req.Users = make([]*UserInfo,0)
+
+	for i = 0; i < 20; i++ {
+		req.Users = append(req.Users,&UserInfo{UserId: i})
+	}
+	res,err := UserClient.GetUserScore(ctx,&req)
+	fmt.Println(res.Users)
+	//流模式
 }

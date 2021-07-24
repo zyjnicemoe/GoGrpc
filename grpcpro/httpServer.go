@@ -13,11 +13,17 @@ import (
 //GODEBUG=x509ignoreCN=0 同样需要加这个参数运行
 func main() {
 	gwmux := runtime.NewServeMux()
+	gRpcEndPoint := "localhost:9029"
 	opt := []grpc.DialOption{grpc.WithTransportCredentials(helper.GetClientCreds())}
 
 	err := services.RegisterProdServiceHandlerFromEndpoint(context.Background(),
 		gwmux,
-		"localhost:9029",
+		gRpcEndPoint,
+		opt,
+	)
+	err = services.RegisterOrderServerHandlerFromEndpoint(context.Background(),
+		gwmux,
+		gRpcEndPoint,
 		opt,
 	)
 	if err != nil {

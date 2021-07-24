@@ -3,9 +3,10 @@
  go get -t github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
  go get -t github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
  go get -t github.com/golang/protobuf/protoc-gen-go
+ go get -t github.com/envoyproxy/protoc-gen-validate
 ```
 
-### 在pbfile下执行
-```bash
-protoc -I. -I%GOPATH%/include -I%GOPATH%/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.16.0/third_party/googleapis --go_out=plugins=grpc:. --grpc-gateway_out=logtostderr=true:. *.proto
+# 在grpcpro下执行
+```powershell
+gen.bat
 ```

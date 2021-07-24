@@ -15,6 +15,8 @@ func main() {
 	//}
 	rpcServer := grpc.NewServer(grpc.Creds(helper.GetServerCreds()))
 	services.RegisterProdServiceServer(rpcServer, new(services.ProdService))
+	services.RegisterOrderServerServer(rpcServer, new(services.OrderService))
+	services.RegisterUserServiceServer(rpcServer, new(services.UserService))
 	//tcp
 	lis, _ := net.Listen("tcp", ":9029")
 	rpcServer.Serve(lis)
